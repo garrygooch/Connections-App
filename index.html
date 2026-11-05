@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connecting Wall Clone</title>
+  <style>
+    :root {
+      --bg-color: #0b132b;
+      --card-bg: #1c2541;
+      --card-hover: #3a506b;
+      --card-selected: #5bc0be;
+      --text-color: #ffffff;
+      --accent-color: #6fffe9;
+      --error-color: #e76f51;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 20px;
+    }
+
+    .timer-display {
+      font-size: 2rem;
+      font-weight: bold;
+      background: #1c2541;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--accent-color);
+    }
+
+    .strikes {
+      font-size: 1.5rem;
+      letter-spacing: 5px;
+      color: var(--error-color);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 2px solid #2b3a55;
+      border-radius: 8px;
+      height: 90px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+
+    .card:hover:not(.solved) {
+      background-color: var(--card-hover);
+    }
+
+    .card.selected {
+      background-color: var(--card-selected);
+      color: #000;
+      border-color: var(--accent-color);
+    }
+
+    .card.solved {
+      cursor: default;
+    }
+
+    .card.solved-0 { background-color: #2a9d8f; color: #fff; }
+    .card.solved-1 { background-color: #264653; color: #fff; }
+    .card.solved-2 { background-color: #e9c46a; color: #000; }
+    .card.solved-3 { background-color: #f4a261; color: #000; }
+
+    .status-panel {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      text-align: center;
+      min-height: 40px;
+    }
+
+    .btn {
+      background-color: var(--card-selected);
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Connecting Wall</h1>
+    <div class="timer-display" id="timer">03:00</div>
+    <div class="strikes" id="strikes"></div>
+  </header>
+
+  <div class="grid" id="wall"></div>
+
+  <div class="status-panel">
+    <div id="status">Select 4 items that share a category.</div>
+    <button class="btn" id="start-btn" onclick="startGame()">Start Game</button>
+  </div>
+
+  <script>
+    // Audio Synthesizer (Web Audio API)
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      const now = audioCtx.currentTime;
+
+      if (type === 'select') {
+        osc.frequency.setValueAtTime(440, now);
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+        osc.start(now);
+        osc.stop(now + 0.1);
+      } else if (type === 'success') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(523.25, now); // C5
+        osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+        osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+        osc.start(now);
+        osc.stop(now + 0.4);
+      } else if (type === 'fail') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(180, now);
+        osc.frequency.setValueAtTime(130, now + 0.15);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      }
+    }
+
+    // Wall Data
+    const solutionGroups = [
+      { id: 0, category: "Cured / Pork Meats", items: ["Lechon", "Speck", "Gammon", "Prosciutto"] },
+      { id: 1, category: "Tiny Amounts", items: ["Crumb", "Iota", "Pip", "Trace"] },
+      { id: 2, category: "Backgammon Terms", items: ["Coup", "Bear off", "Anchor", "Bacon"] }, // 'Bacon' filler example
+      { id: 3, category: "Remnants", items: ["Debris", "Morsel", "Smidgen", "Autumn"] }
+    ];
+
+    let items = [];
+    let selectedItems = [];
+    let solvedGroups = [];
+    let strikesLeft = 3;
+    let timeLeft = 180;
+    let timerInterval = null;
+    let gameActive = false;
+
+    const wallGrid = document.getElementById("wall");
+    const statusEl = document.getElementById("status");
+    const timerEl = document.getElementById("timer");
+    const strikesEl = document.getElementById("strikes");
+
+    function initGame() {
+      // Flatten items into single array and shuffle
+      items = solutionGroups.flatMap(g => g.items.map(item => ({ text: item, groupId: g.id })));
+      items.sort(() => Math.random() - 0.5);
+      renderWall();
+    }
+
+    function startGame() {
+      if (gameActive) return;
+      gameActive = true;
+      document.getElementById("start-btn").style.display = "none";
+      
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+          endGame(false, "Time's up!");
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+      const secs = (timeLeft % 60).toString().padStart(2, '0');
+      timerEl.textContent = `${mins}:${secs}`;
+    }
+
+    function renderWall() {
+      wallGrid.innerHTML = "";
+      items.forEach((itemObj) => {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.textContent = itemObj.text;
+
+        const solvedGroupIndex = solvedGroups.findIndex(g => g.items.includes(itemObj.text));
+        
+        if (solvedGroupIndex !== -1) {
+          card.classList.add("solved", `solved-${solvedGroupIndex}`);
+        } else if (selectedItems.includes(itemObj.text)) {
+          card.classList.add("selected");
+        }
+
+        card.addEventListener("click", () => handleSelect(itemObj.text));
+        wallGrid.appendChild(card);
+      });
+    }
+
+    function handleSelect(itemText) {
+      if (!gameActive || solvedGroups.some(g => g.items.includes(itemText))) return;
+
+      playSound('select');
+
+      if (selectedItems.includes(itemText)) {
+        selectedItems = selectedItems.filter(i => i !== itemText);
+      } else if (selectedItems.length < 4) {
+        selectedItems.push(itemText);
+      }
+
+      renderWall();
+
+      if (selectedItems.length === 4) {
+        setTimeout(checkSelection, 200);
+      }
+    }
+
+    function checkSelection() {
+      // Check if selected 4 belong to any single group
+      const matchedGroup = solutionGroups.find(g => 
+        selectedItems.every(item => g.items.includes(item))
+      );
+
+      if (matchedGroup && !solvedGroups.includes(matchedGroup)) {
+        playSound('success');
+        solvedGroups.push(matchedGroup);
+        statusEl.textContent = `Group Found: ${matchedGroup.category}`;
+        
+        // Move solved items to top of array
+        items.sort((a, b) => {
+          const aSolved = solvedGroups.some(g => g.items.includes(a.text));
+          const bSolved = solvedGroups.some(g => g.items.includes(b.text));
+          return bSolved - aSolved;
+        });
+
+        if (solvedGroups.length === 4) {
+          endGame(true, "Wall Solved! Excellent work!");
+        }
+      } else {
+        playSound('fail');
+        statusEl.textContent = "Incorrect Group!";
+        
+        // Show strikes when 2 groups remain unsolved (Only Connect Rule)
+        if (solvedGroups.length >= 2) {
+          strikesLeft--;
+          renderStrikes();
+          if (strikesLeft === 0) {
+            endGame(false, "Out of lives!");
+          }
+        }
+      }
+
+      selectedItems = [];
+      renderWall();
+    }
+
+    function renderStrikes() {
+      strikesEl.textContent = "✖ ".repeat(3 - strikesLeft);
+    }
+
+    function endGame(success, message) {
+      gameActive = false;
+      clearInterval(timerInterval);
+      statusEl.textContent = `${message} ${success ? '🎉' : '❌'}`;
+    }
+
+    initGame();
+  </script>
+</body>
+</html>
