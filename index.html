@@ -59,6 +59,8 @@
     }
 
     .card {
+      color: var(--text-color);
+      overflow-wrap: anywhere;
       background-color: var(--card-bg);
       border: 2px solid #2b3a55;
       border-radius: 8px;
@@ -112,6 +114,7 @@
       cursor: pointer;
       margin-top: 10px;
     }
+    @media (max-width: 540px) { body { padding: 12px; } h1 { font-size: 1.3rem; } .grid { gap: 6px; } .card { font-size: .8rem; padding: 4px; } .timer-display { font-size: 1.3rem; } }
   </style>
 </head>
 <body>
@@ -122,10 +125,12 @@
     <div class="strikes" id="strikes"></div>
   </header>
 
+  <p id="puzzle-info"></p>
   <div class="grid" id="wall"></div>
 
   <div class="status-panel">
-    <div id="status">Select 4 items that share a category.</div>
+    <div id="answers"></div>
+    <div id="status" role="status">Select 4 items that share a category.</div>
     <button class="btn" id="start-btn" onclick="startGame()">Start Game</button>
   </div>
 
@@ -170,12 +175,26 @@
     }
 
     // Wall Data
-    const solutionGroups = [
-      { id: 0, category: "Cured / Pork Meats", items: ["Lechon", "Speck", "Gammon", "Prosciutto"] },
-      { id: 1, category: "Tiny Amounts", items: ["Crumb", "Iota", "Pip", "Trace"] },
-      { id: 2, category: "Backgammon Terms", items: ["Coup", "Bear off", "Anchor", "Bacon"] }, // 'Bacon' filler example
-      { id: 3, category: "Remnants", items: ["Debris", "Morsel", "Smidgen", "Autumn"] }
-    ];
+    let solutionGroups = [];
+    let puzzles = [];
+    let currentPuzzleId = null;
+    let checkingSelection = false;
+
+    async function loadPuzzles() {
+      const button = document.getElementById('start-btn');
+      button.disabled = true;
+      try {
+        const response = await fetch('puzzles.json');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        puzzles = await response.json();
+        if (!Array.isArray(puzzles) || !puzzles.length) throw new Error('No puzzles available');
+        button.disabled = false;
+        initGame();
+      } catch (error) {
+        statusEl.textContent = 'Could not load puzzles. Run the local server and reload the page.';
+        console.error(error);
+      }
+    }
 
     let items = [];
     let selectedItems = [];
@@ -191,14 +210,36 @@
     const strikesEl = document.getElementById("strikes");
 
     function initGame() {
+      clearInterval(timerInterval);
+      gameActive = false;
+      checkingSelection = false;
+      selectedItems = [];
+      solvedGroups = [];
+      strikesLeft = 3;
+      timeLeft = 180;
+      const choices = puzzles.filter(p => p.id !== currentPuzzleId);
+      const puzzle = (choices.length ? choices : puzzles)[Math.floor(Math.random() * (choices.length || puzzles.length))];
+      currentPuzzleId = puzzle.id;
+      solutionGroups = puzzle.groups.map((g, id) => ({...g, id}));
+      document.getElementById('puzzle-info').textContent = `${puzzle.title || 'Puzzle #' + puzzle.id} · ${puzzle.author || 'Unknown'} · ${puzzles.length} puzzles`;
+      document.getElementById('answers').replaceChildren();
+      document.getElementById('start-btn').textContent = 'Start Game';
+      document.getElementById('start-btn').style.display = '';
+      statusEl.textContent = 'Select 4 items that share a category.';
+      updateTimerDisplay();
+      renderStrikes();
       // Flatten items into single array and shuffle
       items = solutionGroups.flatMap(g => g.items.map(item => ({ text: item, groupId: g.id })));
-      items.sort(() => Math.random() - 0.5);
+      for (let i = items.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [items[i], items[j]] = [items[j], items[i]];
+      }
       renderWall();
     }
 
     function startGame() {
-      if (gameActive) return;
+      if (gameActive || !puzzles.length) return;
+      if (timeLeft <= 0 || solvedGroups.length === 4 || strikesLeft === 0) initGame();
       gameActive = true;
       document.getElementById("start-btn").style.display = "none";
       
@@ -220,8 +261,9 @@
     function renderWall() {
       wallGrid.innerHTML = "";
       items.forEach((itemObj) => {
-        const card = document.createElement("div");
+        const card = document.createElement("button");
         card.classList.add("card");
+        card.setAttribute("aria-pressed", selectedItems.includes(itemObj.text));
         card.textContent = itemObj.text;
 
         const solvedGroupIndex = solvedGroups.findIndex(g => g.items.includes(itemObj.text));
@@ -238,7 +280,7 @@
     }
 
     function handleSelect(itemText) {
-      if (!gameActive || solvedGroups.some(g => g.items.includes(itemText))) return;
+      if (!gameActive || checkingSelection || solvedGroups.some(g => g.items.includes(itemText))) return;
 
       playSound('select');
 
@@ -251,11 +293,14 @@
       renderWall();
 
       if (selectedItems.length === 4) {
+        checkingSelection = true;
         setTimeout(checkSelection, 200);
       }
     }
 
     function checkSelection() {
+      checkingSelection = false;
+      if (!gameActive || selectedItems.length !== 4) return;
       // Check if selected 4 belong to any single group
       const matchedGroup = solutionGroups.find(g => 
         selectedItems.every(item => g.items.includes(item))
@@ -301,10 +346,18 @@
     function endGame(success, message) {
       gameActive = false;
       clearInterval(timerInterval);
+      document.getElementById('start-btn').textContent = 'Next Puzzle';
+      document.getElementById('start-btn').style.display = '';
+      const answers = document.getElementById('answers');
+      solutionGroups.forEach(g => {
+        const row = document.createElement('p');
+        row.textContent = `${g.category}: ${g.items.join(', ')}`;
+        answers.appendChild(row);
+      });
       statusEl.textContent = `${message} ${success ? '🎉' : '❌'}`;
     }
 
-    initGame();
+    loadPuzzles();
   </script>
 </body>
 </html>

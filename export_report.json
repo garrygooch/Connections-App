@@ -1,0 +1,665 @@
+{
+  "exported": 417,
+  "skipped": [
+    {
+      "id": "123670",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123673",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123682",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123683",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123684",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123685",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123686",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123687",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123688",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123689",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123690",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123691",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123692",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123693",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123695",
+      "reason": "Duplicate tiles"
+    },
+    {
+      "id": "123696",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123700",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123701",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123702",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123705",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123707",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123717",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123718",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123719",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123720",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123722",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123723",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123724",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123725",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123726",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123727",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123728",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123729",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123730",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123733",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123736",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123737",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123741",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123744",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123746",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123747",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123748",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123749",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123750",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123751",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123756",
+      "reason": "Duplicate tiles"
+    },
+    {
+      "id": "123757",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123760",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123763",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123765",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123769",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123784",
+      "reason": "Group 4: expected four nonempty items"
+    },
+    {
+      "id": "123789",
+      "reason": "Group 3: expected four nonempty items"
+    },
+    {
+      "id": "123793",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123796",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123801",
+      "reason": "Group 2: expected four nonempty items"
+    },
+    {
+      "id": "123809",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123820",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123822",
+      "reason": "Duplicate tiles"
+    },
+    {
+      "id": "123829",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123831",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123835",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123843",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123844",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123856",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123862",
+      "reason": "Duplicate tiles"
+    },
+    {
+      "id": "123875",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123877",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123879",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123881",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123883",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123884",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123887",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123889",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123891",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123894",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123903",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123916",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123918",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123922",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123930",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123931",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123932",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123936",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123937",
+      "reason": "Group 2: expected four nonempty items"
+    },
+    {
+      "id": "123938",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123953",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123958",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123961",
+      "reason": "Group 4: expected four nonempty items"
+    },
+    {
+      "id": "123981",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123982",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123986",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123990",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "123995",
+      "reason": "Duplicate tiles"
+    },
+    {
+      "id": "124001",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124002",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124003",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124004",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124014",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124017",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124018",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124019",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124021",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124023",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124024",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124028",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124033",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124039",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124042",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124046",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124049",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124059",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124062",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124063",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124064",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124066",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124068",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124069",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124070",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124073",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124074",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124077",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124079",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124084",
+      "reason": "Duplicate tiles"
+    },
+    {
+      "id": "124091",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124093",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124094",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124097",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124099",
+      "reason": "Group 2: expected four nonempty items"
+    },
+    {
+      "id": "124100",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124106",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124114",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124115",
+      "reason": "Group 2: expected four nonempty items"
+    },
+    {
+      "id": "124123",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124126",
+      "reason": "Duplicate tiles"
+    },
+    {
+      "id": "124130",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124136",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124137",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124143",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124144",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124153",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124156",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124157",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124159",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124160",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124161",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124168",
+      "reason": "Duplicate tiles"
+    },
+    {
+      "id": "124173",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124174",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124179",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124181",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124184",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124188",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124196",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124198",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124207",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124209",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124211",
+      "reason": "Group 2: expected four nonempty items"
+    },
+    {
+      "id": "124214",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124215",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124217",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124218",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124219",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124234",
+      "reason": "Group 1: expected four nonempty items"
+    },
+    {
+      "id": "124247",
+      "reason": "Group 1: expected four nonempty items"
+    }
+  ]
+}

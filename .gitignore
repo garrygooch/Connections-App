@@ -1,0 +1,10 @@
+# Local credentials and editor settings
+client_secret*.json
+.vscode/
+.env
+.env.*
+!.env.example
+
+# Python runtime files
+__pycache__/
+*.py[cod]
