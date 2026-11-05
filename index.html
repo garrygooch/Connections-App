@@ -27,13 +27,28 @@
     }
 
     header {
+      position: relative;
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
       width: 100%;
       max-width: 800px;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
+      min-height: 110px;
     }
+
+    .brand { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .brand-mark { display: grid; grid-template-columns: repeat(4, 12px); gap: 4px; transform: rotate(-8deg); }
+    .brand-mark span { width: 12px; height: 12px; border-radius: 3px; box-shadow: 0 2px 8px #0004; }
+    .brand-mark span:nth-child(4n + 1) { background: #233c88; }
+    .brand-mark span:nth-child(4n + 2) { background: #008568; }
+    .brand-mark span:nth-child(4n + 3) { background: #61124f; }
+    .brand-mark span:nth-child(4n) { background: #107e98; }
+    .brand h1 { margin: 0; text-align: center; font-size: clamp(1.6rem, 5vw, 2.6rem); line-height: 1.1; font-weight: 900; letter-spacing: -.04em; }
+    .brand h1 span { color: var(--accent-color); }
+    .brand-tagline { margin: 0; font-size: .65rem; letter-spacing: .3em; text-transform: uppercase; color: #a9bed1; }
+    header .strikes { position: absolute; right: 0; bottom: 0; }
+    @media (max-width: 540px) { header { padding-bottom: 38px; } header .strikes { left: 0; justify-content: center; } }
 
     .timer-display {
       font-size: 2rem;
@@ -44,11 +59,23 @@
       border: 1px solid var(--accent-color);
     }
 
+    .countdown-panel { display: flex; align-items: center; gap: 16px; width: 100%; max-width: 800px; margin-top: 20px; }
+    .countdown-panel .timer-display { flex-shrink: 0; font-variant-numeric: tabular-nums; }
+    .countdown-track { flex: 1; height: 20px; overflow: hidden; background: var(--card-bg); border: 1px solid #3a506b; border-radius: 10px; }
+    .countdown-fill { height: 100%; width: 100%; background: var(--accent-color); transition: width 1s linear, background-color .3s; }
+    @media (prefers-reduced-motion: reduce) { .countdown-fill { transition: none; } }
+
     .strikes {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
       font-size: 1.5rem;
       letter-spacing: 5px;
       color: var(--error-color);
     }
+
+    .life-icon { width: 36px; height: 36px; object-fit: contain; }
 
     .grid {
       display: grid;
@@ -92,10 +119,10 @@
       cursor: default;
     }
 
-    .card.solved-0 { background-color: #2a9d8f; color: #fff; }
-    .card.solved-1 { background-color: #264653; color: #fff; }
-    .card.solved-2 { background-color: #e9c46a; color: #000; }
-    .card.solved-3 { background-color: #f4a261; color: #000; }
+    .card.solved-0 { background-color: #233c88; color: #fff; }
+    .card.solved-1 { background-color: #008568; color: #fff; }
+    .card.solved-2 { background-color: #61124f; color: #fff; }
+    .card.solved-3 { background-color: #107e98; color: #fff; }
 
     .status-panel {
       margin-top: 20px;
@@ -114,71 +141,119 @@
       cursor: pointer;
       margin-top: 10px;
     }
+    .card.dealing { animation: tile-shuffle 950ms ease-in-out both; animation-delay: var(--deal-delay); }
+    .card.dealing span { animation: word-reveal 300ms ease-out both; animation-delay: calc(650ms + var(--deal-delay)); }
+    @keyframes tile-shuffle {
+      0% { transform: translate(0, 0) rotateY(0); }
+      35% { transform: translate(var(--shuffle-x), var(--shuffle-y)) rotate(-8deg) scale(.85); }
+      65% { transform: translate(0, 0) rotateY(90deg) scale(.95); }
+      100% { transform: translate(0, 0) rotateY(0); }
+    }
+    @keyframes word-reveal { from { opacity: 0; } to { opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) { .card.dealing { animation: none; } .card.dealing span { animation-delay: 0ms; } }
+    .grid.connections { max-width: 1100px; grid-template-columns: 1fr; }
+    .connection-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(180px, 2fr); gap: 12px; }
+    .connection-label { background: var(--bg-color); color: white; border: 3px solid; border-radius: 8px; padding: 12px; font: inherit; font-weight: bold; white-space: pre-line; overflow-wrap: anywhere; cursor: pointer; }
+    .connection-label:disabled { opacity: 1; cursor: default; }
+    @media (max-width: 700px) { .connection-row { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; } .connection-label { grid-column: 1 / -1; min-height: 54px; } }
     @media (max-width: 540px) { body { padding: 12px; } h1 { font-size: 1.3rem; } .grid { gap: 6px; } .card { font-size: .8rem; padding: 4px; } .timer-display { font-size: 1.3rem; } }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>Connecting Wall</h1>
-    <div class="timer-display" id="timer">03:00</div>
-    <div class="strikes" id="strikes"></div>
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <h1>Connecting <span>Wall</span></h1>
+      <p class="brand-tagline">Sixteen clues. Four connections.</p>
+    </div>
+    <div class="strikes" id="strikes" role="status" aria-label="Lives activate after two groups are found"></div>
   </header>
 
-  <p id="puzzle-info"></p>
   <div class="grid" id="wall"></div>
+  <div class="countdown-panel">
+    <div class="timer-display" id="timer">03:00</div>
+    <div class="countdown-track" id="countdown" role="progressbar" aria-label="Time remaining" aria-valuemin="0" aria-valuemax="180" aria-valuenow="180">
+      <div class="countdown-fill" id="countdown-fill"></div>
+    </div>
+  </div>
 
   <div class="status-panel">
     <div id="answers"></div>
     <div id="status" role="status">Select 4 items that share a category.</div>
+    <button class="btn" id="audio-btn" onclick="toggleAudio()" aria-pressed="false">Mute audio</button>
     <button class="btn" id="start-btn" onclick="startGame()">Start Game</button>
   </div>
 
   <script>
-    // Audio Synthesizer (Web Audio API)
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const soundFiles = {
+      select: 'click_on.mp3', success: 'solved_group.mp3',
+      fail: 'incorrect_group.mp3', life: 'lose_life.mp3',
+      timeout: 'time_up.mp3', outro: 'game_outro.mp3'
+    };
+    const sounds = Object.fromEntries(Object.entries(soundFiles).map(([event, file]) => {
+      const audio = new Audio(`sounds/${file}`);
+      audio.preload = 'auto';
+      audio.volume = 0.7;
+      return [event, audio];
+    }));
+    // Fetch the latest edit of the music on every page load.
+    const music = new Audio(`sounds/background_music.m4a?v=${Date.now()}`);
+    music.loop = true;
+    music.volume = 0.25;
+    let audioMuted = false;
+
+    function playAudio(audio) {
+      // Playback restrictions or missing audio should never interrupt the game.
+      const playback = audio.play();
+      if (playback) playback.catch(() => {});
+    }
 
     function playSound(type) {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
+      const audio = sounds[type];
+      audio.currentTime = 0;
+      playAudio(audio);
+    }
 
-      const now = audioCtx.currentTime;
-
-      if (type === 'select') {
-        osc.frequency.setValueAtTime(440, now);
-        gain.gain.setValueAtTime(0.1, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-        osc.start(now);
-        osc.stop(now + 0.1);
-      } else if (type === 'success') {
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(523.25, now); // C5
-        osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
-        osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
-        gain.gain.setValueAtTime(0.2, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-        osc.start(now);
-        osc.stop(now + 0.4);
-      } else if (type === 'fail') {
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(180, now);
-        osc.frequency.setValueAtTime(130, now + 0.15);
-        gain.gain.setValueAtTime(0.2, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-        osc.start(now);
-        osc.stop(now + 0.3);
+    function stopAudio() {
+      for (const audio of [music, ...Object.values(sounds)]) {
+        audio.onended = null;
+        audio.pause();
+        audio.currentTime = 0;
       }
+    }
+
+    function toggleAudio() {
+      audioMuted = !audioMuted;
+      for (const audio of [music, ...Object.values(sounds)]) audio.muted = audioMuted;
+      const button = document.getElementById('audio-btn');
+      button.textContent = audioMuted ? 'Unmute audio' : 'Mute audio';
+      button.setAttribute('aria-pressed', audioMuted);
     }
 
     // Wall Data
     let solutionGroups = [];
     let puzzles = [];
     let currentPuzzleId = null;
+    const historyKey = 'connecting-wall-played-v1';
+    const playedPuzzleIds = new Set();
+    function readPlayedHistory() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(historyKey) || '[]');
+        if (Array.isArray(saved)) saved.forEach(id => playedPuzzleIds.add(String(id)));
+      } catch (error) { console.warn('Puzzle history could not be loaded.', error); }
+    }
+    readPlayedHistory();
+
+    function rememberPuzzle() {
+      readPlayedHistory();
+      playedPuzzleIds.add(currentPuzzleId);
+      try {
+        localStorage.setItem(historyKey, JSON.stringify([...playedPuzzleIds]));
+      } catch (error) { console.warn('Puzzle history is only available for this session.', error); }
+    }
     let checkingSelection = false;
+    let connectionRound = false;
 
     async function loadPuzzles() {
       const button = document.getElementById('start-btn');
@@ -203,6 +278,7 @@
     let timeLeft = 180;
     let timerInterval = null;
     let gameActive = false;
+    let dealing = false;
 
     const wallGrid = document.getElementById("wall");
     const statusEl = document.getElementById("status");
@@ -212,16 +288,33 @@
     function initGame() {
       clearInterval(timerInterval);
       gameActive = false;
+      dealing = false;
       checkingSelection = false;
+      connectionRound = false;
+      revealedConnections.clear();
+      wallGrid.classList.remove('connections');
       selectedItems = [];
       solvedGroups = [];
       strikesLeft = 3;
       timeLeft = 180;
-      const choices = puzzles.filter(p => p.id !== currentPuzzleId);
-      const puzzle = (choices.length ? choices : puzzles)[Math.floor(Math.random() * (choices.length || puzzles.length))];
+      readPlayedHistory();
+      const choices = puzzles.filter(p => !playedPuzzleIds.has(p.id));
+      if (!choices.length) {
+        currentPuzzleId = null;
+        items = [];
+        solutionGroups = [];
+        wallGrid.replaceChildren();
+        document.getElementById('answers').replaceChildren();
+        const button = document.getElementById('start-btn');
+        button.textContent = 'All puzzles played';
+        button.disabled = true;
+        button.style.display = '';
+        statusEl.textContent = 'You have played every available puzzle. Add more puzzles to keep playing without repeats.';
+        return;
+      }
+      const puzzle = choices[Math.floor(Math.random() * choices.length)];
       currentPuzzleId = puzzle.id;
       solutionGroups = puzzle.groups.map((g, id) => ({...g, id}));
-      document.getElementById('puzzle-info').textContent = `${puzzle.title || 'Puzzle #' + puzzle.id} · ${puzzle.author || 'Unknown'} · ${puzzles.length} puzzles`;
       document.getElementById('answers').replaceChildren();
       document.getElementById('start-btn').textContent = 'Start Game';
       document.getElementById('start-btn').style.display = '';
@@ -238,16 +331,32 @@
     }
 
     function startGame() {
-      if (gameActive || !puzzles.length) return;
-      if (timeLeft <= 0 || solvedGroups.length === 4 || strikesLeft === 0) initGame();
-      gameActive = true;
+      if (gameActive || dealing || !puzzles.length) return;
+      readPlayedHistory();
+      if (connectionRound || playedPuzzleIds.has(currentPuzzleId)) initGame();
+      if (!currentPuzzleId) return;
+      rememberPuzzle();
+      stopAudio();
+      playAudio(music);
+      dealing = true;
       document.getElementById("start-btn").style.display = "none";
-      
+      statusEl.textContent = 'Shuffling the wall…';
+      renderWall();
+      setTimeout(() => {
+        dealing = false;
+        gameActive = true;
+        statusEl.textContent = 'Select 4 items that share a category.';
+        renderWall();
+        beginTimer();
+      }, 1400);
+    }
+
+    function beginTimer() {
       timerInterval = setInterval(() => {
         timeLeft--;
         updateTimerDisplay();
         if (timeLeft <= 0) {
-          endGame(false, "Time's up!");
+          endGame(false, "Time's up!", 'timeout');
         }
       }, 1000);
     }
@@ -256,15 +365,34 @@
       const mins = Math.floor(timeLeft / 60).toString().padStart(2, '0');
       const secs = (timeLeft % 60).toString().padStart(2, '0');
       timerEl.textContent = `${mins}:${secs}`;
+      const fill = document.getElementById('countdown-fill');
+      fill.style.width = `${Math.max(0, timeLeft) / 180 * 100}%`;
+      fill.style.backgroundColor = timeLeft <= 30 ? 'var(--error-color)' : 'var(--accent-color)';
+      const countdown = document.getElementById('countdown');
+      countdown.setAttribute('aria-valuenow', timeLeft);
+      countdown.setAttribute('aria-valuetext', `${mins} minutes ${secs} seconds remaining`);
     }
 
     function renderWall() {
+      if (connectionRound) { renderConnections(); return; }
       wallGrid.innerHTML = "";
-      items.forEach((itemObj) => {
+      items.forEach((itemObj, index) => {
         const card = document.createElement("button");
         card.classList.add("card");
         card.setAttribute("aria-pressed", selectedItems.includes(itemObj.text));
-        card.textContent = itemObj.text;
+        card.disabled = !gameActive;
+        if (dealing) {
+          card.classList.add('dealing');
+          card.style.setProperty('--deal-delay', `${index * 25}ms`);
+          card.style.setProperty('--shuffle-x', `${index % 2 ? -35 : 35}px`);
+          card.style.setProperty('--shuffle-y', `${index < 8 ? 25 : -25}px`);
+          const word = document.createElement('span');
+          word.textContent = itemObj.text;
+          card.appendChild(word);
+        } else {
+          card.textContent = gameActive ? itemObj.text : '';
+        }
+        card.setAttribute('aria-label', gameActive ? itemObj.text : 'Hidden tile');
 
         const solvedGroupIndex = solvedGroups.findIndex(g => g.items.includes(itemObj.text));
         
@@ -298,6 +426,22 @@
       }
     }
 
+    function animateGroupMove(previousPositions) {
+      if (!previousPositions.length || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+      Array.from(wallGrid.children).forEach((card, index) => {
+        const previous = previousPositions.find(position => position.text === items[index].text);
+        if (!previous || !card.animate) return;
+        const next = card.getBoundingClientRect();
+        const x = previous.rect.left - next.left;
+        const y = previous.rect.top - next.top;
+        card.animate([
+          { transform: `translate(${x}px, ${y}px) scale(1)`, zIndex: 2 },
+          { transform: `translate(${x * .5}px, ${y * .5}px) scale(1.05)`, zIndex: 2, offset: .45 },
+          { transform: 'translate(0, 0) scale(1)', zIndex: 2 }
+        ], { duration: 650, easing: 'cubic-bezier(.22, 1, .36, 1)' });
+      });
+    }
+
     function checkSelection() {
       checkingSelection = false;
       if (!gameActive || selectedItems.length !== 4) return;
@@ -307,25 +451,34 @@
       );
 
       if (matchedGroup && !solvedGroups.includes(matchedGroup)) {
+        const previousPositions = Array.from(wallGrid.children).map((card, index) => ({
+          text: items[index].text, rect: card.getBoundingClientRect?.()
+        })).filter(position => position.rect);
         playSound('success');
         solvedGroups.push(matchedGroup);
-        statusEl.textContent = `Group Found: ${matchedGroup.category}`;
+        renderStrikes();
+        statusEl.textContent = 'Group found!';
+        if (solvedGroups.length === 2) statusEl.textContent += ' — Three lives now active!';
         
-        // Move solved items to top of array
-        items.sort((a, b) => {
-          const aSolved = solvedGroups.some(g => g.items.includes(a.text));
-          const bSolved = solvedGroups.some(g => g.items.includes(b.text));
-          return bSolved - aSolved;
-        });
-
-        if (solvedGroups.length === 4) {
-          endGame(true, "Wall Solved! Excellent work!");
-        }
+        // Keep each solved group together in discovery order.
+        const remaining = items.filter(item => !solvedGroups.some(group => group.id === item.groupId));
+        items = [...solvedGroups.flatMap(group => group.items.map(text => ({text, groupId: group.id}))), ...remaining];
+        selectedItems = [];
+        checkingSelection = true;
+        renderWall();
+        animateGroupMove(previousPositions);
+        setTimeout(() => {
+          checkingSelection = false;
+          if (gameActive && solvedGroups.length === 4) {
+            endGame(true, "Wall Solved! Excellent work!");
+          }
+        }, 650);
+        return;
       } else {
-        playSound('fail');
+        playSound(solvedGroups.length >= 2 ? 'life' : 'fail');
         statusEl.textContent = "Incorrect Group!";
         
-        // Show strikes when 2 groups remain unsolved (Only Connect Rule)
+        // Lives activate once two groups have been found.
         if (solvedGroups.length >= 2) {
           strikesLeft--;
           renderStrikes();
@@ -340,21 +493,74 @@
     }
 
     function renderStrikes() {
-      strikesEl.textContent = "✖ ".repeat(3 - strikesLeft);
+      const livesActive = solvedGroups.length >= 2;
+      strikesEl.replaceChildren();
+      if (livesActive) {
+        for (let i = 0; i < strikesLeft; i++) {
+          const life = document.createElement('img');
+          life.src = 'images/lives.png';
+          life.alt = '';
+          life.classList.add('life-icon');
+          strikesEl.appendChild(life);
+        }
+      }
+      strikesEl.setAttribute('aria-label', livesActive
+        ? `${strikesLeft} of 3 lives remaining`
+        : 'Lives activate after two groups are found');
     }
 
-    function endGame(success, message) {
+    function endGame(success, message, reason) {
+      if (!gameActive) return;
+      music.pause();
+      if (reason === 'timeout') {
+        sounds.timeout.onended = () => {
+          sounds.timeout.onended = null;
+          playSound('outro');
+        };
+        playSound('timeout');
+      } else {
+        playSound('outro');
+      }
       gameActive = false;
       clearInterval(timerInterval);
       document.getElementById('start-btn').textContent = 'Next Puzzle';
       document.getElementById('start-btn').style.display = '';
-      const answers = document.getElementById('answers');
-      solutionGroups.forEach(g => {
-        const row = document.createElement('p');
-        row.textContent = `${g.category}: ${g.items.join(', ')}`;
-        answers.appendChild(row);
+      selectedItems = [];
+      checkingSelection = false;
+      connectionRound = true;
+      renderWall();
+      statusEl.textContent = `${message} What are the connections of the four groups? Guess each connection, then click to reveal.`;
+    }
+
+    const revealedConnections = new Set();
+    function renderConnections() {
+      wallGrid.innerHTML = '';
+      wallGrid.classList.add('connections');
+      const colors = ['#233c88', '#008568', '#61124f', '#107e98'];
+      const orderedGroups = [...solvedGroups, ...solutionGroups.filter(g => !solvedGroups.includes(g))];
+      orderedGroups.forEach((group, index) => {
+        const row = document.createElement('div');
+        row.classList.add('connection-row');
+        group.items.forEach(text => {
+          const tile = document.createElement('div');
+          tile.classList.add('card', 'solved', `solved-${index}`);
+          tile.textContent = text;
+          row.appendChild(tile);
+        });
+        const reveal = document.createElement('button');
+        reveal.classList.add('connection-label');
+        reveal.style.borderColor = colors[index];
+        const isRevealed = revealedConnections.has(group.id);
+        reveal.textContent = isRevealed ? group.category : 'Click to reveal';
+        reveal.disabled = isRevealed;
+        reveal.setAttribute('aria-label', isRevealed ? group.category : `Reveal connection for group ${index + 1}`);
+        reveal.addEventListener('click', () => {
+          revealedConnections.add(group.id);
+          renderConnections();
+        });
+        row.appendChild(reveal);
+        wallGrid.appendChild(row);
       });
-      statusEl.textContent = `${message} ${success ? '🎉' : '❌'}`;
     }
 
     loadPuzzles();
