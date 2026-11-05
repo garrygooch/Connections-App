@@ -1,0 +1,10 @@
+{
+  "id": "./",
+  "name": "Connecting Wall",
+  "short_name": "Connecting Wall",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b132b",
+  "theme_color": "#0b132b"
+}
