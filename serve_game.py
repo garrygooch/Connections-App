@@ -5,11 +5,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 ASSETS = {'/': ('index.html', 'text/html; charset=utf-8'), '/index.html': ('index.html', 'text/html; charset=utf-8'), '/puzzles.json': ('puzzles.json', 'application/json; charset=utf-8')}
 
+ASSETS['/manifest.webmanifest'] = ('manifest.webmanifest', 'application/manifest+json')
 ASSETS['/images/lives.png'] = ('images/lives.png', 'image/png')
 
 # Explicit filenames keep credentials and database files inaccessible.
 for filename in ('click_on.mp3', 'solved_group.mp3', 'incorrect_group.mp3',
-                 'lose_life.mp3', 'time_up.mp3', 'game_outro.mp3', 'background_music.m4a'):
+                 'lose_life.mp3', 'game_outro.mp3', 'background_music.m4a'):
     ASSETS[f'/sounds/{filename}'] = (f'sounds/{filename}',
                                     'audio/mp4' if filename.endswith('.m4a') else 'audio/mpeg')
 

@@ -25,7 +25,7 @@ jobs:
       - name: Prepare public assets
         run: |
           mkdir public
-          cp index.html puzzles.json public/
+          cp index.html puzzles.json manifest.webmanifest public/
           cp -r sounds images public/
           touch public/.nojekyll
       - uses: actions/configure-pages@v5
